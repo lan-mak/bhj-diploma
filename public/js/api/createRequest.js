@@ -3,38 +3,97 @@
  * на сервер.
  * */
 const createRequest = (options = {}) => {
-  console.log(options)
 
   const xhr = new XMLHttpRequest;
   const formData = new FormData;
 
-  if (options.method === 'GET' && Boolean(options.data)) {
-    xhr.open(options.method, `http://localhost:8000/mail=${options.data.email}&${options.data.password}`)
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      options.callback(xhr.onerror, xhr.response)
-    })
-    xhr.send()
-  } else if (options.method === 'GET' && !Boolean(options.data)) {
-    xhr.open(options.method, `http://localhost:8000/`)
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      options.callback(xhr.onerror, xhr.response)
+  try {
+    let getDataOption = () => {
+      let dataUrlOptions = []
+
+      if (Object.keys(options.data).length > 1) {
+        for (let i of Object.entries(options.data)) {
+          dataUrlOptions.push(i[0] + '=' + i[1])
+        }
+      } else {
+        for (let i of Object.entries(options.data)) {
+          dataUrlOptions.push(i[0] + '=' + i[1])
+        }
       }
-    )
-    xhr.send()
+      dataUrlOptions = dataUrlOptions.join('&')
+
+      return dataUrlOptions
+    }
+
+    let postDataOptions = () => {
+      for (let i of Object.entries(options.data)) {
+        formData.append(i[0], i[1])
+      }
+    }
+
+    if (options.method === 'GET' && Boolean(options.data)) {
+      xhr.open(options.method, `${options.url}${getDataOption()}`)
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (Boolean(options.callback)) {
+          options.callback(xhr.onerror, xhr.response)
+        }
+      })
+      xhr.send()
+    } else if (options.method === 'GET' && !Boolean(options.data)) {
+      xhr.open(options.method, `${options.url}`)
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (Boolean(options.callback)) {
+          options.callback(xhr.onerror, xhr.response)
+        }
+      })
+      xhr.send()
+    }
+
+    if (options.method === 'POST') {
+      postDataOptions()
+
+      xhr.open(options.method, options.url)
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (Boolean(options.callback)) {
+          options.callback(xhr.onerror, xhr.response)
+        }
+      })
+      xhr.responseType = 'json';
+      xhr.send(formData)
+    }
+
+    if (options.method === 'PUT') {
+      postDataOptions()
+
+      xhr.open(options.method, options.url)
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (Boolean(options.callback)) {
+          options.callback(xhr.onerror, xhr.response)
+        }
+      })
+      xhr.responseType = 'json';
+      xhr.send(formData)
+    }
+
+    if (options.method === 'DELETE') {
+      postDataOptions()
+
+      xhr.open(options.method, options.url)
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (Boolean(options.callback)) {
+          options.callback(xhr.onerror, xhr.response)
+        }
+      })
+      xhr.responseType = 'json';
+      xhr.send(formData)
+    }
   }
-
-  if (options.method === 'POST') {
-
-    formData.append('mail', `${options.data.mail}`)
-    formData.append('password', `${options.data.password}`)
-
-    xhr.open(options.method, options.url)
-    xhr.addEventListener('load', () => {
-      options.callback(xhr.onerror, xhr.response)
-    })
-    xhr.responseType = 'json';
-    xhr.send( formData )
+  catch(e) {
+    callback(e);
   }
-};
+}
