@@ -19,7 +19,7 @@ class User {
    * пользователе из локального хранилища.
    * */
   static unsetCurrent() {
-    localStorage.user = undefined
+    localStorage.removeItem('user')
   }
 
   /**
@@ -27,10 +27,10 @@ class User {
    * из локального хранилища
    * */
   static current() {
-    if ((localStorage.user === 'undefined')) {
+    if (localStorage.user === 'undefined') {
       return localStorage.user
     } else {
-      return JSON.parse(localStorage.user)
+      return localStorage.user
     }
   }
 
@@ -39,20 +39,28 @@ class User {
    * авторизованном пользователе.
    * */
   static fetch(callback) {
-
-    const xhr = createRequest(
-      {
-        url: this.URL + '/current',
-        method: 'GET',
-        callback( err, response ) {
-          if ( response && response.user ) {
-            this.setCurrent( response.user );
-          }
+    const xhr = createRequest({
+      url: this.URL + '/current',
+      method: 'GET',
+      responseType: 'json',
+      callback(err, response) {
+        if (response && response.user) {
+          User.setCurrent(response.user);
         }
+        callback(err, {
+          "success": true,
+          "user": {
+            "id": 2,
+            "name": "Vlad",
+            "email": "l@l.one",
+            "created_at": "2019-03-06 18:46:41",
+            "updated_at": "2019-03-06 18:46:41"
+          }
+        });
       }
-    )
-    console.log(xhr)
+    })
   }
+
 
   /**
    * Производит попытку авторизации.
@@ -66,7 +74,7 @@ class User {
       method: 'POST',
       responseType: 'json',
       data,
-      callback: (err, response) => {
+      callback(err, response) {
         if (response && response.user) {
           this.setCurrent(response.user);
         }
@@ -93,13 +101,6 @@ class User {
   }
 }
 
-User.fetch((null, {
-  "success": true,
-  "user": {
-      "id": 2,
-      "name": "Vlad",
-      "email": "l@l.one",
-      "created_at": "2019-03-06 18:46:41",
-      "updated_at": "2019-03-06 18:46:41"
-  }
-}))
+User.fetch((err, response) => {
+  console.log(response.user.id); // 2
+});

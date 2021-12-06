@@ -61,7 +61,6 @@ const createRequest = (options = {}) => {
           options.callback(xhr.onerror, xhr.response)
         }
       })
-      xhr.responseType = 'json';
       xhr.send(formData)
     }
 
@@ -75,7 +74,6 @@ const createRequest = (options = {}) => {
           options.callback(xhr.onerror, xhr.response)
         }
       })
-      xhr.responseType = 'json';
       xhr.send(formData)
     }
 
@@ -89,11 +87,9 @@ const createRequest = (options = {}) => {
           options.callback(xhr.onerror, xhr.response)
         }
       })
-      xhr.responseType = 'json';
       xhr.send(formData)
     }
-  }
-  catch(e) {
+  } catch (e) {
     callback(e);
   }
 }
