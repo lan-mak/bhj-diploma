@@ -14,7 +14,13 @@ class AccountsWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor( element ) {
-
+    if (!element) {
+      throw new Error('элемента не существует');
+    };
+    console.log(element)
+    this.element = element;
+    this.registerEvents();
+    this.update();
   }
 
   /**
@@ -25,7 +31,9 @@ class AccountsWidget {
    * вызывает AccountsWidget.onSelectAccount()
    * */
   registerEvents() {
-
+    this.element.querySelector('.create-account').addEventListener('click', (e) => {
+      App.getModal('createAccount').open()
+    })
   }
 
   /**
@@ -40,6 +48,13 @@ class AccountsWidget {
    * */
   update() {
 
+    if (Boolean(User.current())) {
+        Account.list(null, (err, response) => {
+
+          console.log(response)
+        })
+
+    }
   }
 
   /**
@@ -68,7 +83,7 @@ class AccountsWidget {
    * item - объект с данными о счёте
    * */
   getAccountHTML(item){
-
+    console.log('gg')
   }
 
   /**

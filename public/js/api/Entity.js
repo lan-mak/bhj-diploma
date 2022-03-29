@@ -11,7 +11,7 @@ class Entity {
 
   static URL = '';
 
-  static list(data, callback){
+  static list(data, callback) {
     let requestList = {
       url: this.URL,
       method: 'GET',
