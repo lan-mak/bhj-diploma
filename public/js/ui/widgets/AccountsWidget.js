@@ -17,10 +17,8 @@ class AccountsWidget {
     if (!element) {
       throw new Error('элемента не существует');
     };
-    console.log(element)
     this.element = element;
     this.registerEvents();
-    this.update();
   }
 
   /**
@@ -50,10 +48,12 @@ class AccountsWidget {
 
     if (Boolean(User.current())) {
         Account.list(null, (err, response) => {
-
           console.log(response)
+          if (response.success) {
+            this.clear();
+            this.renderItem(response.data);
+          }
         })
-
     }
   }
 
@@ -83,7 +83,16 @@ class AccountsWidget {
    * item - объект с данными о счёте
    * */
   getAccountHTML(item){
-    console.log('gg')
+    const {name, id, num} = item;
+
+    return `
+    <li class="account" data-id="${id}">
+      <a href="#">
+        <span>${name}</span> /
+        <span>${sum} ₽</span>
+      </a>
+    </li>
+    `;
   }
 
   /**
@@ -93,6 +102,9 @@ class AccountsWidget {
    * и добавляет его внутрь элемента виджета
    * */
   renderItem(data){
-
+    console.log(data)
+    data.forEach(item  => {
+      this.element.insertAdjacentHTML('beforeend', this.getAccountHTML(item));
+    });
   }
 }
