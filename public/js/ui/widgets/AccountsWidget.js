@@ -29,8 +29,16 @@ class AccountsWidget {
    * вызывает AccountsWidget.onSelectAccount()
    * */
   registerEvents() {
-    this.element.querySelector('.create-account').addEventListener('click', (e) => {
-      App.getModal('createAccount').open()
+    this.element.addEventListener('click', e => {
+      e.preventDefault();
+
+      if (e.target.closest('.create-account')) {
+        App.getModal('createAccount').open()
+      }
+
+      if (e.target.closest('.account')) {
+        this.onSelectAccount(e.target.closest('.account'))
+      }
     })
   }
 
@@ -63,7 +71,9 @@ class AccountsWidget {
    * в боковой колонке
    * */
   clear() {
-
+    for (let account of this.element.querySelectorAll(".account")) {
+      account.remove();
+    }
   }
 
   /**
@@ -74,7 +84,7 @@ class AccountsWidget {
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
   onSelectAccount( element ) {
-
+    console.log(element)
   }
 
   /**
@@ -83,7 +93,7 @@ class AccountsWidget {
    * item - объект с данными о счёте
    * */
   getAccountHTML(item){
-    const {name, id, num} = item;
+    const {name, id, sum} = item;
 
     return `
     <li class="account" data-id="${id}">
