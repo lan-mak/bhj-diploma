@@ -40,15 +40,6 @@ class AsyncForm {
    * }
    * */
   getData() {
-    // let input =  Array.from(this.element.querySelectorAll('input'));
-    // let inputData = {}
-
-    // input.forEach(element => {
-    //   inputData[element.name] = element.value;
-    // });
-
-    // return inputData;
-
     let formData = new FormData(this.element),
     entries = formData.entries();
 

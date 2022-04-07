@@ -19,6 +19,7 @@ class AccountsWidget {
     };
     this.element = element;
     this.registerEvents();
+    this.update();
   }
 
   /**
@@ -56,7 +57,6 @@ class AccountsWidget {
 
     if (Boolean(User.current())) {
         Account.list(null, (err, response) => {
-          console.log(response)
           if (response.success) {
             this.clear();
             this.renderItem(response.data);
@@ -84,7 +84,12 @@ class AccountsWidget {
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
   onSelectAccount( element ) {
-    console.log(element)
+    for (let elem of this.element.querySelectorAll('.active')) {
+      elem.classList.remove('active');
+    }
+
+    element.closest('.account').classList.add('active');
+    App.showPage('transactions', { account_id: element.closest('.active').getAttribute('data-id')});
   }
 
   /**
@@ -112,7 +117,6 @@ class AccountsWidget {
    * и добавляет его внутрь элемента виджета
    * */
   renderItem(data){
-    console.log(data)
     data.forEach(item  => {
       this.element.insertAdjacentHTML('beforeend', this.getAccountHTML(item));
     });

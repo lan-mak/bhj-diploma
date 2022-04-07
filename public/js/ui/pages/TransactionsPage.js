@@ -11,14 +11,19 @@ class TransactionsPage {
    * через registerEvents()
    * */
   constructor( element ) {
+    if (!element) {
+      throw new Error('элемента не существует');
+    };
 
+    this.element = element;
+    this.registerEvents()
   }
 
   /**
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-
+    this.render()
   }
 
   /**
@@ -28,7 +33,18 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
+    this.element.addEventListener('click', e => {
+      let removeAccount = this.element.querySelector('.remove-account');
+      let transactionRemove = this.element.querySelector('.transaction__remove');
 
+      // removeAccount.addEventListener('click', e => {
+      //   TransactionsPage.removeAccount()
+      // })
+
+      // transactionRemove.addEventListener('click', e => {
+      //   TransactionsPage.removeTransaction()
+      // })
+    })
   }
 
   /**
@@ -61,8 +77,19 @@ class TransactionsPage {
    * в TransactionsPage.renderTransactions()
    * */
   render(options){
+    if (!options) return
+    this.lastOptions = options;
 
-  }
+    Account.get(this.lastOptions.account_id, (err, response) => {
+    if (response.success) {
+      this.renderTitle(response.data.name)
+
+      Transaction.list(response.data, (err, response) => {
+        console.log(response)
+      })
+      };
+    })  
+}
 
   /**
    * Очищает страницу. Вызывает
@@ -77,7 +104,7 @@ class TransactionsPage {
    * Устанавливает заголовок в элемент .content-title
    * */
   renderTitle(name){
-
+    this.element.querySelector('.content-title').textContent = name
   }
 
   /**
