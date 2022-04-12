@@ -16,6 +16,6 @@ class Account extends Entity {
       callback
     }
 
-    createRequest(idUser)
+    createRequest(idUser);
   }
 }

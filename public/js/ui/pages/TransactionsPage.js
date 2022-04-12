@@ -23,7 +23,7 @@ class TransactionsPage {
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-    this.render()
+    this.render(this.lastOptions)
   }
 
   /**
@@ -33,10 +33,21 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
+    
     this.element.addEventListener('click', e => {
-      let removeAccount = this.element.querySelector('.remove-account');
-      let transactionRemove = this.element.querySelector('.transaction__remove');
+      let target = e.target
+
+      if (target.closest('.transaction__remove')) {
+        let transactionId = target.closest('.transaction__remove').dataset.id
+        this.removeTransaction({id: transactionId})
+      }
+
+      if (target.closest('.remove-account')) {
+        this.removeAccount()
+      }
+
     })
+    
   }
 
   /**
@@ -49,7 +60,18 @@ class TransactionsPage {
    * для обновления приложения
    * */
   removeAccount() {
-
+    Account.get(this.lastOptions.account_id, (err, response) => {
+      if (confirm("Вы согласны удалить счёт?")) {
+        Account.remove(response.data, (err, response) => {
+          if (response.success) {
+            App.updateWidgets()
+          }
+        })
+        this.clear()
+      } else {
+        return false;
+      }
+    })
   }
 
   /**
@@ -59,7 +81,15 @@ class TransactionsPage {
    * либо обновляйте текущую страницу (метод update) и виджет со счетами
    * */
   removeTransaction(id) {
-
+    if (confirm("Вы подтверждаете удаление транзакции?")) {
+      Transaction.remove(id, (err, response) => {
+        if (response.success) {
+          App.update()
+        }
+      })
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -75,9 +105,12 @@ class TransactionsPage {
     Account.get(this.lastOptions.account_id, (err, response) => {
       if (response.success) {
         this.renderTitle(response.data.name)
-        Transaction.list(response.data, (err, response) => {
-          console.log(response)
-        })
+      };
+    })
+
+    Transaction.list(this.lastOptions, (err, response) => {
+      if (response.success) {
+        this.renderTransactions(response.data)
       };
     })
   }
@@ -88,7 +121,8 @@ class TransactionsPage {
    * Устанавливает заголовок: «Название счёта»
    * */
   clear() {
-
+    this.renderTransactions([]);
+    this.renderTitle('Название счёта');
   }
 
   /**
@@ -104,6 +138,10 @@ class TransactionsPage {
    * */
   formatDate(date) {
 
+    const now = new Date(date);
+    const ruDate = new Intl.DateTimeFormat("ru", {dateStyle: "long"}).format(now);
+    const ruTime = new Intl.DateTimeFormat("ru", {timeStyle: "short"}).format(now);
+    return ruDate + ' в ' + ruTime
   }
 
   /**
@@ -111,7 +149,34 @@ class TransactionsPage {
    * item - объект с информацией о транзакции
    * */
   getTransactionHTML(item) {
+    let dateItem = this.formatDate(item.created_at)
 
+    return `
+    <div class="transaction transaction_${item.type} row">
+      <div class="col-md-7 transaction__details">
+        <div class="transaction__icon">
+            <span class="fa fa-money fa-2x"></span>
+        </div>
+        <div class="transaction__info">
+            <h4 class="transaction__title">${item.name}</h4>
+            <!-- дата -->
+            <div class="transaction__date">${dateItem}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="transaction__summ">
+        <!--  сумма -->
+            ${item.sum} <span class="currency">₽</span>
+        </div>
+      </div>
+      <div class="col-md-2 transaction__controls">
+          <!-- в data-id нужно поместить id -->
+          <button class="btn btn-danger transaction__remove" data-id="${item.id}">
+              <i class="fa fa-trash"></i>  
+          </button>
+      </div>
+    </div>
+    `
   }
 
   /**
@@ -119,6 +184,10 @@ class TransactionsPage {
    * используя getTransactionHTML
    * */
   renderTransactions(data) {
-
+    const content = this.element.querySelector('.content');
+    content.innerHTML = '';
+    data.forEach(item => {
+      content.insertAdjacentHTML('beforeend', this.getTransactionHTML(item));
+    });
   }
 }

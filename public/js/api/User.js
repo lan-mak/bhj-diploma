@@ -11,7 +11,7 @@ class User {
    * локальном хранилище.
    * */
   static setCurrent(user) {
-    localStorage.user = JSON.stringify(user)
+    localStorage.user = JSON.stringify(user);
   }
 
   /**
@@ -19,7 +19,7 @@ class User {
    * пользователе из локального хранилища.
    * */
   static unsetCurrent() {
-    localStorage.removeItem('user')
+    localStorage.removeItem('user');
   }
 
   /**
@@ -38,12 +38,11 @@ class User {
     createRequest({
       url: this.URL + '/current',
       method: 'GET',
-      responseType: 'json',
       callback(err, response) {
-        if (response && response.user && response.user !== null && response.success === true) {
+        if (response.success) {
           User.setCurrent(response.user);
         } else {
-          User.unsetCurrent()
+          User.unsetCurrent();
         }
         callback(err, response);
       }
@@ -61,13 +60,12 @@ class User {
     createRequest({
       url: this.URL + '/login',
       method: 'POST',
-      responseType: 'json',
       data,
       callback(err, response) {
-        if (response && response.user && response.success === true) {
+        if (response && response.user) {
           User.setCurrent(response.user);
         }
-        callback(err, response)
+        callback(err, response);
       }
     });
   }
@@ -82,15 +80,14 @@ class User {
     createRequest({
       url: this.URL + '/register',
       method: 'POST',
-      responseType: 'json',
       data,
       callback(err, response) {
-        if (response && response.user && response.success === true) {
+        if (response && response.user) {
           User.setCurrent(response.user);
         }
-        callback(err, response)
+        callback(err, response);
       }
-    })
+    });
   }
 
   /**
@@ -101,14 +98,13 @@ class User {
     createRequest({
       url: this.URL + '/logout',
       method: 'POST',
-      responseType: 'json',
       callback(err, response) {
-        if (response && response.success === true) {
-          User.unsetCurrent()
+        if (response.success) {
+          User.unsetCurrent();
         }
-        callback(err, response)
+        callback(err, response);
       }
-    })
+    });
   }
 }
 

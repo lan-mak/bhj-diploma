@@ -18,7 +18,7 @@ class Entity {
       data,
       callback
     }
-    createRequest(requestList)
+    createRequest(requestList);
   }
 
   /**
@@ -33,7 +33,7 @@ class Entity {
       data,
       callback
     }
-    createRequest(requestCreate)
+    createRequest(requestCreate);
   }
 
   /**
@@ -47,6 +47,6 @@ class Entity {
       data,
       callback
     }
-    createRequest(requestRemove)
+    createRequest(requestRemove);
   }
 }
