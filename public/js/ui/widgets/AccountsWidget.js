@@ -16,10 +16,11 @@ class AccountsWidget {
   constructor( element ) {
     if (!element) {
       throw new Error('элемента не существует');
-    };
-    this.element = element;
-    this.registerEvents();
-    this.update();
+    } else {
+      this.element = element;
+      this.registerEvents();
+      this.update();
+    }
   }
 
   /**
@@ -34,13 +35,13 @@ class AccountsWidget {
       e.preventDefault();
 
       if (e.target.closest('.create-account')) {
-        App.getModal('createAccount').open()
+        App.getModal('createAccount').open();
       }
 
       if (e.target.closest('.account')) {
-        this.onSelectAccount(e.target.closest('.account'))
+        this.onSelectAccount(e.target.closest('.account'));
       }
-    })
+    });
   }
 
   /**
@@ -54,14 +55,13 @@ class AccountsWidget {
    * метода renderItem()
    * */
   update() {
-
     if (Boolean(User.current())) {
-        Account.list(null, (err, response) => {
-          if (response.success) {
-            this.clear();
-            this.renderItem(response.data);
-          }
-        })
+      Account.list(null, (err, response) => {
+        if (response.success) {
+          this.clear();
+          this.renderItem(response.data);
+        }
+      });
     }
   }
 

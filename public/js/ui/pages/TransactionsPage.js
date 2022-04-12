@@ -13,17 +13,17 @@ class TransactionsPage {
   constructor(element) {
     if (!element) {
       throw new Error('элемента не существует');
-    };
-
-    this.element = element;
-    this.registerEvents()
+    } else {
+      this.element = element;
+      this.registerEvents();
+    }
   }
 
   /**
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-    this.render(this.lastOptions)
+    this.render(this.lastOptions);
   }
 
   /**
@@ -33,21 +33,20 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
-    
     this.element.addEventListener('click', e => {
-      let target = e.target
+      let target = e.target;
 
       if (target.closest('.transaction__remove')) {
-        let transactionId = target.closest('.transaction__remove').dataset.id
-        this.removeTransaction({id: transactionId})
+        let transactionId = target.closest('.transaction__remove').dataset.id;
+        this.removeTransaction({
+          id: transactionId
+        });
       }
 
       if (target.closest('.remove-account')) {
-        this.removeAccount()
+        this.removeAccount();
       }
-
-    })
-    
+    });
   }
 
   /**
@@ -64,14 +63,14 @@ class TransactionsPage {
       if (confirm("Вы согласны удалить счёт?")) {
         Account.remove(response.data, (err, response) => {
           if (response.success) {
-            App.updateWidgets()
+            App.updateWidgets();
           }
-        })
-        this.clear()
+        });
+        this.clear();
       } else {
         return false;
       }
-    })
+    });
   }
 
   /**
@@ -84,9 +83,9 @@ class TransactionsPage {
     if (confirm("Вы подтверждаете удаление транзакции?")) {
       Transaction.remove(id, (err, response) => {
         if (response.success) {
-          App.update()
+          App.update();
         }
-      })
+      });
     } else {
       return false;
     }
@@ -99,20 +98,20 @@ class TransactionsPage {
    * в TransactionsPage.renderTransactions()
    * */
   render(options) {
-    if (!options) return
+    if (!options) return;
     this.lastOptions = options;
 
     Account.get(this.lastOptions.account_id, (err, response) => {
       if (response.success) {
-        this.renderTitle(response.data.name)
-      };
-    })
+        this.renderTitle(response.data.name);
+      }
+    });
 
     Transaction.list(this.lastOptions, (err, response) => {
       if (response.success) {
-        this.renderTransactions(response.data)
-      };
-    })
+        this.renderTransactions(response.data);
+      }
+    });
   }
 
   /**
@@ -129,7 +128,7 @@ class TransactionsPage {
    * Устанавливает заголовок в элемент .content-title
    * */
   renderTitle(name) {
-    this.element.querySelector('.content-title').textContent = name
+    this.element.querySelector('.content-title').textContent = name;
   }
 
   /**
@@ -137,11 +136,11 @@ class TransactionsPage {
    * в формат «10 марта 2019 г. в 03:20»
    * */
   formatDate(date) {
-
     const now = new Date(date);
     const ruDate = new Intl.DateTimeFormat("ru", {dateStyle: "long"}).format(now);
     const ruTime = new Intl.DateTimeFormat("ru", {timeStyle: "short"}).format(now);
-    return ruDate + ' в ' + ruTime
+
+    return ruDate + ' в ' + ruTime;
   }
 
   /**
@@ -149,7 +148,7 @@ class TransactionsPage {
    * item - объект с информацией о транзакции
    * */
   getTransactionHTML(item) {
-    let dateItem = this.formatDate(item.created_at)
+    let dateItem = this.formatDate(item.created_at);
 
     return `
     <div class="transaction transaction_${item.type} row">
@@ -176,7 +175,7 @@ class TransactionsPage {
           </button>
       </div>
     </div>
-    `
+    `;
   }
 
   /**
