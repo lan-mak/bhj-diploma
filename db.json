@@ -15,6 +15,11 @@
   ],
   "accounts": [
     {
+      "name": "Банк",
+      "user_id": "1",
+      "id": "1"
+    },
+    {
       "name": "Магазин",
       "user_id": "1",
       "id": "2"
@@ -133,6 +138,24 @@
       "sum": 300000,
       "type": "expense",
       "user_id": "1"
+    },
+    {
+      "id": "1mcuepnbwl1y5g3pa",
+      "type": "income",
+      "name": "tt",
+      "sum": 333,
+      "account_id": "2",
+      "user_id": "1",
+      "created_at": "2022-04-13T22:33:47.709Z"
+    },
+    {
+      "id": "1mcuepol4l1zgmcvd",
+      "type": "income",
+      "name": "еуые",
+      "sum": 333,
+      "account_id": "3",
+      "user_id": "1",
+      "created_at": "2022-04-14T20:34:21.480Z"
     }
   ]
 }

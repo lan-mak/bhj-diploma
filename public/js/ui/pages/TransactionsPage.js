@@ -67,8 +67,6 @@ class TransactionsPage {
           }
         });
         this.clear();
-      } else {
-        return false;
       }
     });
   }
@@ -86,8 +84,6 @@ class TransactionsPage {
           App.update();
         }
       });
-    } else {
-      return false;
     }
   }
 

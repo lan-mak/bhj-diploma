@@ -10,42 +10,33 @@ const createRequest = (options = {}) => {
   let urlSource = options.url;
   let data = options.data;
 
+  
   if (options.method.toLowerCase() === 'get') {
-
     if (options.data) {
-      let dataRes = Object.entries(options.data);
+      let link = Object.entries(data).reduce((sum, item) => {
+        return sum + item.join('=') + '&';
+      }, '?');
 
-      dataRes.forEach((element, index) => {
-        if (index === 0) {
-          urlSource = urlSource + '?' + element.join('=');
-        } else {
-          urlSource = urlSource + "&" + element.join('=');
-        }
-      });
+      urlSource = link.slice(0, -1);
     }
   } else {
     if (options.data) {
-      for (var key in data) {
+      for (let key in data) {
         formData.append(key, data[key]);
       }
     }
   }
 
-  try {
-    xhr.open(options.method, urlSource);
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      if (Boolean(options.callback)) {
-        options.callback(xhr.onerror, xhr.response);
-      }
-    });
-
-    if (options.method.toLowerCase() === 'get') {
-      xhr.send();
-    } else {
-      xhr.send(formData);
+  xhr.open(options.method, urlSource);
+  xhr.responseType = 'json';
+  xhr.addEventListener('load', () => {
+    if (Boolean(options.callback)) {
+      options.callback(xhr.onerror, xhr.response);
     }
+  });
 
+  try {
+    xhr.send(options.method.toLowerCase() === 'get' ? null : formData);
   } catch (e) {
     callback(e);
   }
